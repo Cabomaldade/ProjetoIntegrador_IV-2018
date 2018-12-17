@@ -1,0 +1,81 @@
+Em UsuarioService - mudar a 'updateData' para -->
+
+private void updateData(Usuario newObj, Usuario obj) {
+		newObj.setNome(obj.getNome());
+		newObj.setEmail(obj.getEmail());
+		newObj.setLogin(obj.getLogin());
+		newObj.setCpf(obj.getCpf());
+		newObj.setSenha(obj.getSenha());
+	}
+
+
+--------------------------------------------------------
+
+Em UsuarioResources.java adicionar os endpoints login e liberar o put
+
+-->
+
+@RequestMapping(value="/login",method=RequestMethod.POST)
+	public ResponseEntity<Usuario> login(@RequestBody UsuarioRequest obj){
+		List<Usuario> list = service.findAll();
+		for(Usuario e : list) {
+			System.out.println(e.getSenha());
+			System.out.println(e.getLogin());
+			if(obj.getLogin().equals(e.getLogin()) && obj.getSenha().equals(e.getSenha())) {
+					return ResponseEntity.ok().body(e);
+			}
+		}
+		return null;
+	}
+
+-->
+
+
+@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<Void> update(@Valid @RequestBody Usuario obj, @PathVariable Integer id){
+		obj.setId(id);
+		obj = service.update(obj);
+		return ResponseEntity.noContent().build();
+	}
+
+
+-----------------------------------------------------------
+
+Criar em Domain a classe UsuarioRequest.java
+
+
+
+package br.edu.iftm.ppi.domain;
+
+
+import java.io.Serializable;
+
+public class UsuarioRequest implements Serializable {
+
+    private String login;
+    private String senha;
+
+    public UsuarioRequest() {
+    }
+
+    public UsuarioRequest(String login, String senha) {
+        this.login = login;
+        this.senha = senha;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+}
